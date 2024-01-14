@@ -4,9 +4,8 @@ services:
   mysql:
     image: mysql:5.7 # MySQLのバージョン指定
     platform: linux/amd64
-    container_name: db-for-go
-    hostname: Hinakko 
-    # MySQLの設定値を指定
+    container_name: db-for-go 
+    # MySQLの設定値を
     command: 
         - --character-set-server=utf8mb4
         - --collation-server=utf8mb4_unicode_ci
