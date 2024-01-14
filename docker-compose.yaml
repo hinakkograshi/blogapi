@@ -1,0 +1,32 @@
+version: '3.3'
+services:
+
+  mysql:
+    image: mysql:5.7 # MySQLのバージョン指定
+    platform: linux/amd64
+    container_name: db-for-go
+    hostname: Hinakko 
+    # MySQLの設定値を指定
+    command: 
+        - --character-set-server=utf8mb4
+        - --collation-server=utf8mb4_unicode_ci
+        - --sql-mode=ONLY_FULL_GROUP_BY,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+        # コンテナ内で使用する環境変数の値を指定
+    environment:
+        MYSQL_ROOT_USER: ${ROOTUSER}
+        MYSQL_ROOT_PASSWORD: ${ROOTPASS}
+        MYSQL_DATABASE: ${DATABASE}
+        MYSQL_USER: ${USERNAME}
+        MYSQL_PASSWORD: ${USERPASS}
+        TZ: 'Asia/Tokyo'
+        #コンテナの 3306 番ポートを、ローカルの 3306 番ポートにつなげる
+    ports: 
+        - "3306:3306"
+# コンテナ内にある MySQL に格納するデータを永続化させるために使用するボリュームを指定
+    volumes:
+        - db-volume:/var/lib/mysql
+# ボリュームの作成
+volumes:
+  db-volume:
+
+ 
