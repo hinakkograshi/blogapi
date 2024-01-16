@@ -13,35 +13,28 @@ func main() {
 	dbPassword := "docker"
 	dbDatabase := "sampledb"
 	dbConn := fmt.Sprintf("%s:%s@tcp(127.0.0.1:3306)/%s?parseTime=true", dbUser, dbPassword, dbDatabase)
+
 	db, err := sql.Open("mysql", dbConn)
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer db.Close()
 
+	article := models.Article{
+		Title:    "insert test",
+		Contents: "Can I insert data correctly?",
+		UserName: "hinakko",
+	}
 	const sqlStr = `
-    select title, contents, username, nice
-    from articles;
+		insert into articles (title, contents, username, nice, created_at) values
+		(?, ?, ?, 0, now());
 	`
-	rows, err := db.Query(sqlStr)
+	result, err := db.Exec(sqlStr, article.Title, article.Contents, article.UserName)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	defer rows.Close()
 
-	articleArray := make([]models.Article, 0)
-
-	for rows.Next() {
-		var article models.Article
-		err := rows.Scan(&article.Title, &article.Contents, &article.UserName, &article.NiceNum)
-
-		if err != nil {
-			fmt.Println(err)
-		} else {
-			articleArray = append(articleArray, article)
-		}
-
-		fmt.Printf("%+v\n", articleArray)
-	}
+	fmt.Println(result.LastInsertId())
+	fmt.Println(result.RowsAffected())
 }
